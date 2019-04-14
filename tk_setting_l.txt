@@ -1,0 +1,10 @@
+  <div class="left_bubbles">
+    <div class="faceicon">
+       <img src="%s">
+    </div>
+    <div class="chatting">
+      <div class="says">
+        <p>%s</p>
+      </div>
+    </div>
+  </div>

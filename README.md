@@ -30,8 +30,16 @@ icon:
 使うイメージ番号
 imgのurlは別資料
 
-格納先ファイル名・・・tk_list.txt
-iconのimg設定ファイル・・・icon_list.txt
+格納先ファイル：
+左側・・・tk_setting_l.txt
+右側・・・tk_setting_r.txt
+
+
+*[tk_main  icon=1]
+一つだけの会話のような吹き出し
+アイコンの大きさが「tk」よりも大きい
+格納先ファイル：
+tk_main_setting.txt
 
 *[text_ad]
 テキストの広告
@@ -42,6 +50,8 @@ iconのimg設定ファイル・・・icon_list.txt
 画像広告
 格納先ファイル名・・・img_ad.txt
 
+アイコンの設定ファイル
+icon_list.txt
 
 # 注意事項
 (1)変換後の文字はハードコーディングです。

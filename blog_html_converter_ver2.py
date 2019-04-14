@@ -51,7 +51,7 @@ def TagList(inputStr, inputIndex):
 
     #nameがあれば値を取得する
     l = inputStr[inputIndex].split()
-    print(l)
+    
     if len(l) > 1 and  l[1].find('name') >= 0 :
         name = l[1]
         name = name.split("=")[1]
@@ -78,9 +78,84 @@ def TagList(inputStr, inputIndex):
     output += '</div>'
     nextIndex = inputIndex
 
-    print(output)
     return  nextIndex,output
-           
+
+def TagTkMain(inputStr, inputIndex):
+
+    print (inputStr[inputIndex])
+    #ファイル読み込む
+    f = codecs.open("tk_main_setting.txt",'r')
+    template = f.read()
+    f.close()
+
+    #アイコン取得
+    img = GetIconSrc(inputStr[inputIndex])
+    output=""
+
+    #文言取得
+    inputIndex +=1 #次へ進める
+
+    for i in range(1000): #range 1000は無限ループ避け
+        if inputStr[inputIndex].find('[/tk_main]') >= 0:
+            inputIndex +=1
+            break
+        else:
+            output +=  inputStr[inputIndex] + '<br>'
+            inputIndex +=1
+
+    output = template % (img , output)
+
+    return inputIndex, output
+
+
+
+def GetIconSrc(inputString):
+    span = inputString.split()
+    #print(span)
+    #ここからIcon番号を取得する
+    imgSrc = ""
+    iconNo = 0
+    for i in range(len(span)):
+        if span[i].find("icon") >= 0:
+            data = span[1]
+            data = data.split("=")[1]
+            
+            a = data.find(']')
+            
+            if a >= 0:
+                data = data[0:a]
+            
+            iconNo = data
+            break
+    #print(iconNo)
+    if iconNo == 0:
+        print ("icon番号を取得できませんでした。　%s" %inputString)
+        return ""
+
+    #iconファイルからimgのsrcを取得する
+    f = open('icon_list.txt')
+    line = f.readline()
+
+    while line:
+        print(line)
+        data = line.split("=")
+
+        if data[0] == iconNo:
+            imgSrc = data[1]
+            imgSrc = imgSrc.replace('\n','')
+            imgSrc = imgSrc.replace('\r','')
+            break
+        line = f.readline()
+
+
+    f.close()
+
+    return imgSrc
+
+
+
+
+
 def ConvertHtml(inputStr):
 
     #出力文字列
@@ -110,6 +185,7 @@ def ConvertHtml(inputStr):
     #不必要な文言削除
     srcStrs = srcStrs[beginIndex:endIndex+1]
 
+    #アイコン情報を取得する
     #print(srcStrs)
 
     print("-----------------------------------------")
@@ -123,11 +199,19 @@ def ConvertHtml(inputStr):
             outputString += "</div>"
         
         elif srcStrs[i].find('[list') >= 0 :
-           nextIndex, output = TagList(srcStrs,i);
-           i = nextIndex
-           outputString +=output
+            nextIndex, output = TagList(srcStrs,i);
+
+            print("listからの出力 %d %s" % (nextIndex, output) )
+            i = nextIndex 
+            outputString +=output
+        elif srcStrs[i].find('[tk_main') >= 0 :
+            nextIndex, output = TagTkMain(srcStrs,i);
+            i = nextIndex
+            outputString +=output
+
         else:
             outputString += "<p>" + srcStrs[i] + "</p>"
+            print("else " + srcStrs[i])
 
         #print(outputString)
         #print('\n')
@@ -137,7 +221,7 @@ def ConvertHtml(inputStr):
     print (endIndex)
 
     print(outputString)
-    return "aaa"
+    return outputString
 
 
 if __name__ == '__main__':
