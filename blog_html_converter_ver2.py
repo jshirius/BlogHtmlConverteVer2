@@ -108,6 +108,36 @@ def TagTkMain(inputStr, inputIndex):
     return inputIndex, output
 
 
+def TagTk(inputStr, inputIndex):
+    
+    print (inputStr[inputIndex])
+    #ファイル読み込む
+    f = codecs.open("tk_main_setting.txt",'r')
+    template = f.read()
+    f.close()
+
+    #アイコン取得
+    img = GetIconSrc(inputStr[inputIndex])
+    output=""
+
+    #モードの確認
+
+
+    #文言取得
+    inputIndex +=1 #次へ進める
+
+    for i in range(1000): #range 1000は無限ループ避け
+        if inputStr[inputIndex].find('[/tk]') >= 0:
+            inputIndex +=1
+            break
+        else:
+            output +=  inputStr[inputIndex] + '<br>'
+            inputIndex +=1
+
+    output = template % (img , output)
+
+    return inputIndex, output
+
 
 def GetIconSrc(inputString):
     span = inputString.split()
@@ -191,13 +221,15 @@ def ConvertHtml(inputStr):
     print("-----------------------------------------")
 
     #文字ごとの対応
-    for i in range(len(srcStrs)):
+    #for i in range(len(srcStrs)):
+    i = 0
+    while i < len(srcStrs):
         if srcStrs[i].find('[div]') >= 0 :
             outputString += "<div>"
-        
+            i +=1
         elif srcStrs[i].find('[/div]') >= 0 :
             outputString += "</div>"
-        
+            i +=1
         elif srcStrs[i].find('[list') >= 0 :
             nextIndex, output = TagList(srcStrs,i);
 
@@ -209,18 +241,23 @@ def ConvertHtml(inputStr):
             i = nextIndex
             outputString +=output
 
+        elif srcStrs[i].find('[tk') >= 0 :
+            nextIndex, output = TagTk(srcStrs,i);
+            i = nextIndex
+            outputString +=output
+
         else:
             outputString += "<p>" + srcStrs[i] + "</p>"
-            print("else " + srcStrs[i])
+            i +=1
 
         #print(outputString)
         #print('\n')
 
 
-    print (beginIndex)
-    print (endIndex)
+    #print (beginIndex)
+    #print (endIndex)
 
-    print(outputString)
+    #print(outputString)
     return outputString
 
 
@@ -236,25 +273,10 @@ if __name__ == '__main__':
     src_txt = f.read()
     f.close()
 
-#print(src_txt)
 
     #htmlに変換する
     output = ConvertHtml(src_txt)
 
-
-
-"""
-    #入力文字を分類する
-    for i in range(len(blocks)):
-        block = blocks[i]
-        print("-----------------------------------------")
-        print block
-
-
-
-    print output
     f = codecs.open('blogOutput.txt', 'w',"utf_8_sig")  # 書き込みモードで開く
     f.write(output)  # シーケンスが引数。
     f.close()
-
-"""
