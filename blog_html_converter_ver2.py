@@ -208,8 +208,49 @@ def TagH(inputStr, inputIndex):
         output = '<h2 class="hikage2">' + inputStr[inputIndex][1:] + '</h2>'
         output = '<p>' + output + '</p>'
 
-    print(output)
+    #print(output)
     return output
+
+def TagQuote(inputStr, inputIndex):
+
+    #文言取得
+    inputIndex +=1 #次へ進める
+
+    output = "<blockquote>"
+
+    for i in range(1000): #range 1000は無限ループ避け
+        if inputStr[inputIndex].find('[/quote]') >= 0:
+            inputIndex +=1
+            break
+        else:
+            output += '<p>' + inputStr[inputIndex] + '</p>'
+            inputIndex +=1
+
+    output += "</blockquote>"
+
+    print(output)
+    return  inputIndex, output
+
+def TagCode(inputStr, inputIndex):
+
+    #文言取得
+    inputIndex +=1 #次へ進める
+
+    output = "<pre><code>"
+
+    for i in range(1000): #range 1000は無限ループ避け
+        if inputStr[inputIndex].find('[/code]') >= 0:
+            inputIndex +=1
+            break
+        else:
+            output += inputStr[inputIndex] + '\n'
+            inputIndex +=1
+
+    output += "</code></pre>"
+
+    print(output)
+    return  inputIndex, output
+
 
 def ConvertHtml(inputStr):
 
@@ -276,10 +317,14 @@ def ConvertHtml(inputStr):
             i +=1
 
         elif srcStrs[i].find('[code]') >= 0 :
-            a = 1
+            nextIndex, output = TagCode(srcStrs,i);
+            i = nextIndex
+            outputString +=output
 
         elif srcStrs[i].find('[quote]') >= 0 :
-            a = 1
+            nextIndex, output = TagQuote(srcStrs,i);
+            i = nextIndex
+            outputString +=output
 
         else:
             outputString += "<p>" + srcStrs[i] + "</p>"
