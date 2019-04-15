@@ -41,6 +41,9 @@ imgのurlは別資料
 格納先ファイル：
 tk_main_setting.txt
 
+#マーク
+3つまで
+
 *[text_ad]
 テキストの広告
 格納先ファイル名・・・text_ad.txt

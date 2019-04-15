@@ -82,7 +82,7 @@ def TagList(inputStr, inputIndex):
 
 def TagTkMain(inputStr, inputIndex):
 
-    print (inputStr[inputIndex])
+    #print (inputStr[inputIndex])
     #ファイル読み込む
     f = codecs.open("tk_main_setting.txt",'r')
     template = f.read()
@@ -91,7 +91,7 @@ def TagTkMain(inputStr, inputIndex):
     #アイコン取得
     img = GetIconSrc(inputStr[inputIndex])
     output=""
-
+    
     #文言取得
     inputIndex +=1 #次へ進める
 
@@ -109,19 +109,26 @@ def TagTkMain(inputStr, inputIndex):
 
 
 def TagTk(inputStr, inputIndex):
-    
-    print (inputStr[inputIndex])
+    #[tk mode=l   icon=1]
+
+    #文字列の[]を削除する
+    act = inputStr[inputIndex][1:-1]
+
+    mode = act.split()[1].split("=")[1]
+
+    fileName = "tk_setting_l.txt"
+
+    if( mode == 'r'):
+        fileName = "tk_setting_r.txt"
+
     #ファイル読み込む
-    f = codecs.open("tk_main_setting.txt",'r')
+    f = codecs.open(fileName,'r')
     template = f.read()
     f.close()
 
     #アイコン取得
     img = GetIconSrc(inputStr[inputIndex])
     output=""
-
-    #モードの確認
-
 
     #文言取得
     inputIndex +=1 #次へ進める
@@ -135,7 +142,7 @@ def TagTk(inputStr, inputIndex):
             inputIndex +=1
 
     output = template % (img , output)
-
+    #print(output)
     return inputIndex, output
 
 
@@ -147,9 +154,8 @@ def GetIconSrc(inputString):
     iconNo = 0
     for i in range(len(span)):
         if span[i].find("icon") >= 0:
-            data = span[1]
+            data = span[i]
             data = data.split("=")[1]
-            
             a = data.find(']')
             
             if a >= 0:
@@ -158,6 +164,7 @@ def GetIconSrc(inputString):
             iconNo = data
             break
     #print(iconNo)
+
     if iconNo == 0:
         print ("icon番号を取得できませんでした。　%s" %inputString)
         return ""
@@ -165,9 +172,9 @@ def GetIconSrc(inputString):
     #iconファイルからimgのsrcを取得する
     f = open('icon_list.txt')
     line = f.readline()
-
+    #print(iconNo)
     while line:
-        print(line)
+        #print(line)
         data = line.split("=")
 
         if data[0] == iconNo:
@@ -184,7 +191,25 @@ def GetIconSrc(inputString):
 
 
 
+def TagH(inputStr, inputIndex):
+    output = ""
 
+    #Hタグの種別判定
+    count = inputStr[inputIndex].count('#')
+
+    if count == 3:
+        output = '<h4 class="hikage2">' + inputStr[inputIndex][3:] + '</h4>'
+        output = '<p>' +output + '</p>'
+
+    elif count ==2:
+        output = '<h3 class="hikage2">' + inputStr[inputIndex][2:] + '</h3>'
+        output = '<p>' +output + '</p>'
+    else:
+        output = '<h2 class="hikage2">' + inputStr[inputIndex][1:] + '</h2>'
+        output = '<p>' + output + '</p>'
+
+    print(output)
+    return output
 
 def ConvertHtml(inputStr):
 
@@ -245,6 +270,16 @@ def ConvertHtml(inputStr):
             nextIndex, output = TagTk(srcStrs,i);
             i = nextIndex
             outputString +=output
+
+        elif srcStrs[i].find('#') >= 0 :
+            outputString += TagH(srcStrs,i);
+            i +=1
+
+        elif srcStrs[i].find('[code]') >= 0 :
+            a = 1
+
+        elif srcStrs[i].find('[quote]') >= 0 :
+            a = 1
 
         else:
             outputString += "<p>" + srcStrs[i] + "</p>"
