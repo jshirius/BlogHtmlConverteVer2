@@ -62,7 +62,7 @@ def TagList(inputStr, inputIndex):
     output += '<div class="list-bc">'
     if len(name) > 1:
         output +=  '<p>' + name + '</p>'
-        inputIndex +=1
+    inputIndex +=1
 
 
     output += '<ol>'
@@ -251,6 +251,27 @@ def TagCode(inputStr, inputIndex):
     print(output)
     return  inputIndex, output
 
+def TagDiv(inputStr, inputIndex):
+    #[tk mode=l   icon=1]
+    output = "<div"
+    
+    #文字列の[]を削除する
+    act = inputStr[1:-1]
+
+    #パラメータチェック
+    params = act.split()
+    print(params)
+    if(len(params) > 1):
+        temp = params[1].split("=")
+        output += " %s=%s" % (temp[0],temp[1])
+    
+
+    output += ">"
+
+    #print(output)
+    return inputIndex, output
+
+
 
 def ConvertHtml(inputStr):
 
@@ -290,8 +311,10 @@ def ConvertHtml(inputStr):
     #for i in range(len(srcStrs)):
     i = 0
     while i < len(srcStrs):
-        if srcStrs[i].find('[div]') >= 0 :
-            outputString += "<div>"
+        if srcStrs[i].find('[div') >= 0 :
+
+            nextIndex, output = TagDiv(srcStrs[i], i)
+            outputString +=output
             i +=1
         elif srcStrs[i].find('[/div]') >= 0 :
             outputString += "</div>"
