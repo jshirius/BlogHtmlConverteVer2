@@ -15,33 +15,6 @@ import re
 """
 UTF8_BOM = bytearray([0xEF, 0XBB, 0XBF])
 
-KIND_NO_AREA = 0
-KIND_DIV_AREA = 1
-KIND_TALK_Q_AREA = 2
-KIND_TALK_A_AREA = 3
-KIND_LIST_1 = 4
-KIND_DIV_WAKU = 5
-KIND_AD_AREA = 6
-KIND_CODE = 7
-KIND_QUOTE = 8
-
-MODE_LIST_1 = 1
-MODE_CODE = 2
-MODE_QUOTE = 3
-
-"""
-StrBlock型の変数にデータをセットする
-ブロック要素
-[div]
-[talk_q]
-[talk_a]
-[list_1]
-[div_waku]
-[ad]
-[code]
-[blockquote]
-"""
-
 
 def TagList(inputStr, inputIndex):
     output=""
@@ -382,4 +355,11 @@ if __name__ == '__main__':
 
     f = codecs.open('blogOutput.txt', 'w',"utf_8_sig")  # 書き込みモードで開く
     f.write(output)  # シーケンスが引数。
+    f.close()
+
+    #デバッグ用にhtmlに書き出す
+    debugOutput =  '<link rel="stylesheet" type="text/css" href="sample.css"> '
+    debugOutput += output
+    f = codecs.open('blogHtmlOutput.html', 'w')  # 書き込みモードで開く
+    f.write(debugOutput)  # シーケンスが引数。
     f.close()
