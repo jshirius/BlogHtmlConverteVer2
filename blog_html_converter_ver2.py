@@ -65,6 +65,19 @@ def TagTkMain(inputStr, inputIndex):
     img = GetIconSrc(inputStr[inputIndex])
     output=""
     
+    chara_name = ""
+    #コメント取得
+    index = inputStr[inputIndex].find("c=")
+    if index >= 0:
+        data = inputStr[inputIndex][index:]
+        data = data.split("=")[1]
+        a = data.find(']')
+        
+        if a >= 0:
+            data = data[0:a]
+            chara_name = data
+    
+    
     #文言取得
     inputIndex +=1 #次へ進める
 
@@ -76,7 +89,7 @@ def TagTkMain(inputStr, inputIndex):
             output +=  inputStr[inputIndex] + '<br>'
             inputIndex +=1
 
-    output = template % (img , output)
+    output = template % (img , chara_name,output)
 
     return inputIndex, output
 
