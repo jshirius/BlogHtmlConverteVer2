@@ -2,10 +2,10 @@
     <div class="faceicon"> 
         <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-        <td><img src="%s"></td>
+        <td class="table_icon"><img src="%s"></td>
         </tr>
         <tr>
-        <td align="center">%s</td>
+        <td align="center" class="table_icon">%s</td>
         </tr>
         </table>  
     </div>
