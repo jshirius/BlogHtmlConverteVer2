@@ -219,10 +219,25 @@ def TagQuote(inputStr, inputIndex):
 
 def TagCode(inputStr, inputIndex):
 
+    #python専用のcodeかチェック
+    mode = 0 #0はデフォルト 1:pythonのコード
+    s = '[code type=p]'
+    m = re.search(r'type=.', s)
+    output = "<pre><code>"
+    if m != None:
+        mode_type = m.group().split("=")[1]
+        if(mode_type == 'p'):
+            #pythonのコード
+            output = '<div class="hcb_wrap">' + '<pre class="prism undefined-numbers lang-python" data-lang="Python"><code>'
+            mode = 1
+ 
     #文言取得
     inputIndex +=1 #次へ進める
 
-    output = "<pre><code>"
+#引数を設置してpythonならば以下のものを入れる
+#<div class="hcb_wrap">
+#<pre class="prism undefined-numbers lang-python" data-lang="Python"><code>/* Your code... */</code></pre>
+#</div>
 
     for i in range(1000): #range 1000は無限ループ避け
         if inputStr[inputIndex].find('[/code]') >= 0:
@@ -232,7 +247,11 @@ def TagCode(inputStr, inputIndex):
             output += inputStr[inputIndex] + '\n'
             inputIndex +=1
 
-    output += "</code></pre>"
+    if mode == 1:
+        output += "</code></pre></div>"
+    else:
+        output += "</code></pre>"
+    
 
     print(output)
     return  inputIndex, output
@@ -325,7 +344,7 @@ def ConvertHtml(inputStr):
             outputString += TagH(srcStrs,i);
             i +=1
 
-        elif srcStrs[i].find('[code]') >= 0 :
+        elif srcStrs[i].find('[code') >= 0 :
             nextIndex, output = TagCode(srcStrs,i);
             i = nextIndex
             outputString +=output
@@ -342,6 +361,8 @@ def ConvertHtml(inputStr):
         #print(outputString)
         #print('\n')
 
+        #ここにpoint用、info用を追加する
+        #あと親子リスト
 
     #print (beginIndex)
     #print (endIndex)
