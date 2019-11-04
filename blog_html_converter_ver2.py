@@ -234,11 +234,6 @@ def TagCode(inputStr, inputIndex):
     #文言取得
     inputIndex +=1 #次へ進める
 
-#引数を設置してpythonならば以下のものを入れる
-#<div class="hcb_wrap">
-#<pre class="prism undefined-numbers lang-python" data-lang="Python"><code>/* Your code... */</code></pre>
-#</div>
-
     for i in range(1000): #range 1000は無限ループ避け
         if inputStr[inputIndex].find('[/code]') >= 0:
             inputIndex +=1
@@ -255,6 +250,37 @@ def TagCode(inputStr, inputIndex):
 
     print(output)
     return  inputIndex, output
+
+#ポイントtagsの対応
+def TagPoint(inputStr, inputIndex):
+    output=""
+    output += '<div class="point_box">'
+
+    #タイトルがあるかチェック
+    m = re.search(r'title=[^\]]*', inputStr[inputIndex])
+    if m != None:
+        title_value = m.group().split("=")[1]
+        #タイトル出力
+        output += '<span class="box-title">' + title_value + '</span>'
+
+    #次に進める
+    inputIndex +=1
+
+    #[/point]まで文字を出力
+    for i in range(1000): #range 1000は無限ループ避け
+        if inputStr[inputIndex].find('[/point]') >= 0:
+            inputIndex +=1
+            break
+        else:
+            output +=  '<p>' + inputStr[inputIndex] + '</p>'
+            inputIndex +=1
+
+    output += '</div>'
+    nextIndex = inputIndex
+
+    return  nextIndex,output
+
+    
 
 def TagDiv(inputStr, inputIndex):
     #[tk mode=l   icon=1]
@@ -353,6 +379,12 @@ def ConvertHtml(inputStr):
             nextIndex, output = TagQuote(srcStrs,i);
             i = nextIndex
             outputString +=output
+
+        elif srcStrs[i].find('[point') >= 0 :
+            nextIndex, output = TagPoint(srcStrs,i);
+            i = nextIndex
+            outputString +=output
+
 
         else:
             outputString += "<p>" + srcStrs[i] + "</p>"
