@@ -201,7 +201,7 @@ def TagQuote(inputStr, inputIndex):
 
     #文言取得
     inputIndex +=1 #次へ進める
-
+ 
     output = "<blockquote>"
 
     for i in range(1000): #range 1000は無限ループ避け
@@ -280,7 +280,34 @@ def TagPoint(inputStr, inputIndex):
 
     return  nextIndex,output
 
-    
+#Info tagsの対応
+def TagInfo(inputStr, inputIndex):
+    output=""
+    output += '<div class="info_box">'
+
+    #タイトルがあるかチェック
+    m = re.search(r'title=[^\]]*', inputStr[inputIndex])
+    if m != None:
+        title_value = m.group().split("=")[1]
+        #タイトル出力
+        output += '<span class="box-title">' + title_value + '</span>'
+
+    #次に進める
+    inputIndex +=1
+
+    #[/point]まで文字を出力
+    for i in range(1000): #range 1000は無限ループ避け
+        if inputStr[inputIndex].find('[/info]') >= 0:
+            inputIndex +=1
+            break
+        else:
+            output +=  '<p>' + inputStr[inputIndex] + '</p>'
+            inputIndex +=1
+
+    output += '</div>'
+    nextIndex = inputIndex
+
+    return  nextIndex,output
 
 def TagDiv(inputStr, inputIndex):
     #[tk mode=l   icon=1]
@@ -385,6 +412,10 @@ def ConvertHtml(inputStr):
             i = nextIndex
             outputString +=output
 
+        elif srcStrs[i].find('[info') >= 0 :
+            nextIndex, output = TagInfo(srcStrs,i);
+            i = nextIndex
+            outputString +=output
 
         else:
             outputString += "<p>" + srcStrs[i] + "</p>"
