@@ -309,6 +309,29 @@ def TagInfo(inputStr, inputIndex):
 
     return  nextIndex,output
 
+#破線の対応
+def TagLine(inputStr, inputIndex):
+    output=""
+    output += '<div class="broken_line">'
+
+    #次に進める
+    inputIndex +=1
+
+    #[/point]まで文字を出力
+    for i in range(1000): #range 1000は無限ループ避け
+        if inputStr[inputIndex].find('[/line]') >= 0:
+            inputIndex +=1
+            break
+        else:
+            output +=  '<p>' + inputStr[inputIndex] + '</p>'
+            inputIndex +=1
+
+    output += '</div>'
+    nextIndex = inputIndex
+
+    return  nextIndex,output
+
+
 def TagDiv(inputStr, inputIndex):
     #[tk mode=l   icon=1]
     output = "<div"
@@ -414,6 +437,11 @@ def ConvertHtml(inputStr):
 
         elif srcStrs[i].find('[info') >= 0 :
             nextIndex, output = TagInfo(srcStrs,i);
+            i = nextIndex
+            outputString +=output
+
+        elif srcStrs[i].find('[line]') >= 0 :
+            nextIndex, output = TagLine(srcStrs,i);
             i = nextIndex
             outputString +=output
 
