@@ -93,6 +93,7 @@ def TagTkMain(inputStr, inputIndex):
     return inputIndex, output
 
 
+
 def TagTk(inputStr, inputIndex):
     # [tk mode=l   icon=1]
 
@@ -194,6 +195,20 @@ def TagH(inputStr, inputIndex):
     # print(output)
     return output
 
+def TagHtml(inputStr, inputIndex):
+
+    inputIndex += 1  # 次へ進める
+    output = ""
+    for i in range(100000):  # range 100000は無限ループ避け
+        if inputStr[inputIndex].find('[/html]') >= 0:
+            inputIndex += 1
+            break
+        else:
+            output +=  inputStr[inputIndex]
+            inputIndex += 1
+    #[/html]まで進める
+
+    return inputIndex, output
 
 def TagQuote(inputStr, inputIndex):
 
@@ -439,6 +454,11 @@ def ConvertHtml(inputStr):
 
         elif srcStrs[i].find('[info') >= 0:
             nextIndex, output = TagInfo(srcStrs, i)
+            i = nextIndex
+            outputString += output
+
+        elif srcStrs[i].find('[html') >= 0:
+            nextIndex, output = TagHtml(srcStrs, i)
             i = nextIndex
             outputString += output
 
