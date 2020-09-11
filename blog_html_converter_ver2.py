@@ -433,7 +433,7 @@ def ConvertHtml(inputStr):
             i = nextIndex
             outputString += output
 
-        elif srcStrs[i].find('#') >= 0:
+        elif(re.search("^\.#|^#" ,srcStrs[i]) !=None):
             outputString += TagH(srcStrs, i)
             i += 1
 
