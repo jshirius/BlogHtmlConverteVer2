@@ -8,7 +8,7 @@
 import sys
 import codecs
 import re
-
+import html
 
 """
 定数宣言
@@ -245,6 +245,9 @@ def TagCode(inputStr, inputIndex):
             output = '<div class="hcb_wrap">' + \
                 '<pre class="prism undefined-numbers lang-python" data-lang="Python"><code>'
             mode = 1
+    else:
+        #textとみなす
+        pass
 
     # 文言取得
     inputIndex += 1  # 次へ進める
@@ -254,7 +257,14 @@ def TagCode(inputStr, inputIndex):
             inputIndex += 1
             break
         else:
-            output += inputStr[inputIndex] + '\n'
+            s = inputStr[inputIndex] 
+            s = s.replace("<","&lt;")
+            s = s.replace(">","&gt;")
+            #s = s.replace("&","&amp;")
+            output += s + '\n'
+            #htmlのエスケープ
+            #output = output.replace("<","&lt;")
+            #output = output.replace(">","&gt;")
             inputIndex += 1
 
     if mode == 1:
@@ -433,11 +443,13 @@ def ConvertHtml(inputStr):
             i = nextIndex
             outputString += output
 
-        elif(re.search("^\.#|^#" ,srcStrs[i]) !=None):
+        #hタグ処理
+        elif re.search("^\.#|^#" ,srcStrs[i]) !=None :
             outputString += TagH(srcStrs, i)
             i += 1
 
-        elif srcStrs[i].find('[code') >= 0:
+        #codeタグ
+        elif re.search('\[code.*\]',srcStrs[i]) !=None:
             nextIndex, output = TagCode(srcStrs, i)
             i = nextIndex
             outputString += output
