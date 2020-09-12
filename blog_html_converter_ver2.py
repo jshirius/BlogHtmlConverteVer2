@@ -9,6 +9,8 @@ import sys
 import codecs
 import re
 import html
+#import misaka as m
+import mistune
 
 """
 定数宣言
@@ -181,7 +183,11 @@ def TagH(inputStr, inputIndex):
     # Hタグの種別判定
     count = inputStr[inputIndex].count('#')
 
-    if count == 3:
+    if count == 4:
+        output = '<h5 class="hikage2">' + inputStr[inputIndex][4:] + '</h5>'
+        output = '<p>' + output + '</p>'
+
+    elif count == 3:
         output = '<h4 class="hikage2">' + inputStr[inputIndex][3:] + '</h4>'
         output = '<p>' + output + '</p>'
 
@@ -381,6 +387,25 @@ def TagDiv(inputStr, inputIndex):
     # print(output)
     return inputIndex, output
 
+def TagMarkdown(inputStr, inputIndex):
+    # マークダウン処理
+    inputIndex += 1  # 次へ進める
+
+    output = ""
+    for i in range(1000):  # range 1000は無限ループ避け
+        if inputStr[inputIndex].find('[/markdown]') >= 0:
+            inputIndex += 1
+            break
+        else:
+            s = inputStr[inputIndex]
+            s = s + "\n"
+            output +=s
+            #output += mistune.html(s)
+            inputIndex += 1
+    output = mistune.html(output)
+    #print(output)
+    return inputIndex, output
+
 
 def ConvertHtml(inputStr):
 
@@ -451,6 +476,12 @@ def ConvertHtml(inputStr):
         #codeタグ
         elif re.search('\[code.*\]',srcStrs[i]) !=None:
             nextIndex, output = TagCode(srcStrs, i)
+            i = nextIndex
+            outputString += output
+
+        #マークダウン
+        elif srcStrs[i].find('[markdown]') >= 0:
+            nextIndex, output = TagMarkdown(srcStrs, i)
             i = nextIndex
             outputString += output
 
