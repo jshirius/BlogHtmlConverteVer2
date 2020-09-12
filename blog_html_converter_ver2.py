@@ -241,7 +241,7 @@ def TagCode(inputStr, inputIndex):
 
     # python専用のcodeかチェック
     mode = 0  # 0はデフォルト 1:pythonのコード
-    s = '[code type=p]'
+    s = inputStr[inputIndex]
     m = re.search(r'type=.', s)
     output = "<pre><code>"
     if m != None:
