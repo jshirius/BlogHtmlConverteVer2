@@ -242,14 +242,21 @@ def TagCode(inputStr, inputIndex):
     # python専用のcodeかチェック
     mode = 0  # 0はデフォルト 1:pythonのコード
     s = inputStr[inputIndex]
-    m = re.search(r'type=.', s)
+    m = re.search(r'type=.*', s[1:-1])
     output = "<pre><code>"
     if m != None:
         mode_type = m.group().split("=")[1]
+        #print(mode_type)
         if(mode_type == 'p'):
             # pythonのコード
             output = '<div class="hcb_wrap">' + \
                 '<pre class="prism undefined-numbers lang-python" data-lang="Python"><code>'
+            mode = 1
+        elif(len(mode_type) > 0):
+
+            output = '<div class="hcb_wrap">' + \
+                '<pre class="prism undefined-numbers lang-%s" data-lang="%s"><code>' % (mode_type, mode_type)
+            
             mode = 1
     else:
         #textとみなす
