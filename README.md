@@ -10,10 +10,13 @@ Html形式に変換してくれるツール。
 
 # タグの意味
 * [div]・・・div要素。文章の最初と終わりには必ず必要
-* [list name="タイトル"]
-リスト表示する。nameは省略できる。
+* [div class=block-a][/div]  [div class=block-b][/div]  で2段組を実現
+* [list title="タイトル"]
+リスト表示する。titleは省略できる。
 格納先ファイル名・・・setting_list.txt
 
+* [list type=2 title=リゲル]
+リスト表示の２つめ
 
 *[code]
 ソースコードを書く。

@@ -18,38 +18,73 @@ import mistune
 UTF8_BOM = bytearray([0xEF, 0XBB, 0XBF])
 
 
+#タグの属性を取得する
+def get_element_value(find_element, input_data):
+    datas = re.findall("\\w+=\\w+", input_data)
+ 
+    rtn_value = None
+    for data in datas:
+        #print(data)
+        if(find_element in data):
+            rtn_value = data.split("=")[1]
+
+            break
+    return rtn_value
+
 def TagList(inputStr, inputIndex):
     output = ""
     name = ""
     # 次のindex
     nextIndex = inputIndex
+    type = 1
 
-    # nameがあれば値を取得する
-    l = inputStr[inputIndex].split()
+    #属性があるかチェック
+    rtn = get_element_value("type", inputStr[inputIndex])
+    #print(rtn)
+    if(rtn != None):
+        type = int(rtn)
+        #print(type)
 
-    if len(l) > 1 and l[1].find('name') >= 0:
-        name = l[1]
-        name = name.split("=")[1]
-        a = name.find(']')
-        if a >= 0:
-            name = name[0:a]
+    #キャプチャの取得
+    title = get_element_value("title", inputStr[inputIndex])
 
-    output += '<div class="list-bc">'
-    if len(name) > 1:
-        output += '<p>' + name + '</p>'
-    inputIndex += 1
+    if(type == 2):
+        #背景があるリストを選択する
+        output += '<div class="background-khaki">'
+        if(title != None):
+            output += '<p>' + title + '</p><hr>'
+        inputIndex += 1
 
-    output += '<ol>'
-    for i in range(1000):  # range 1000は無限ループ避け
-        if inputStr[inputIndex].find('[/list]') >= 0:
-            inputIndex += 1
-            break
-        else:
-            output += '<li>' + inputStr[inputIndex] + '</li>'
-            inputIndex += 1
+        output += '<ol>'
+        for i in range(1000):  # range 1000は無限ループ避け
+            if inputStr[inputIndex].find('[/list]') >= 0:
+                inputIndex += 1
+                break
+            else:
+                output += '<li>' + inputStr[inputIndex] + '</li>'
+                inputIndex += 1
 
-    output += '</ol>'
-    output += '</div>'
+        output += '</ol>'
+        output += '</div>'
+    else:
+        #番号をフルモノ
+        output += '<div class="list-bc">'
+        if(title != None):
+            output += '<p>' + title + '</p><hr>'
+        inputIndex += 1
+
+        output += '<ol>'
+        for i in range(1000):  # range 1000は無限ループ避け
+            if inputStr[inputIndex].find('[/list]') >= 0:
+                inputIndex += 1
+                break
+            else:
+                output += '<li>' + inputStr[inputIndex] + '</li>'
+                inputIndex += 1
+
+        output += '</ol>'
+        output += '</div>'
+
     nextIndex = inputIndex
 
     return nextIndex, output
@@ -521,6 +556,7 @@ def ConvertHtml(inputStr):
             outputString += "<p>" + srcStrs[i] + "</p>"
             i += 1
 
+        outputString = outputString + "\n"
         # print(outputString)
         # print('\n')
 
