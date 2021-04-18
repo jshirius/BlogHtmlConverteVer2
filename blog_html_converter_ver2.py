@@ -11,11 +11,19 @@ import re
 import html
 #import misaka as m
 import mistune
+import argparse
 
 """
 定数宣言
 """
 UTF8_BOM = bytearray([0xEF, 0XBB, 0XBF])
+
+#引数取得
+parser = argparse.ArgumentParser(description='マークダウンもどきで書いたものをhtmlに変換する')  
+parser.add_argument("-b", "--br", default=False,  help='改行は<br>にするか', type=bool)
+parser.add_argument("-f", "--file_path", required=True,  help='ファイルのパス', type=str)
+args = parser.parse_args()
+
 
 
 #タグの属性を取得する
@@ -444,7 +452,7 @@ def TagMarkdown(inputStr, inputIndex):
             output +=s
             #output += mistune.html(s)
             inputIndex += 1
-    output = mistune.html(output)
+    output = mistune.markdown(output)
     #print(output)
     return inputIndex, output
 
@@ -578,12 +586,17 @@ if __name__ == '__main__':
         quit()
 
     # UTF-8のBOMの考慮
-    f = codecs.open(param[1], 'r', "utf_8_sig")
+    f = codecs.open(args.file_path, 'r', "utf_8_sig")
     src_txt = f.read()
     f.close()
 
     # htmlに変換する
     output = ConvertHtml(src_txt)
+
+    # 改行をbrに変換するか
+    if(args.br == True):
+        print("改行を<br>に変換します")
+        output = output.replace('<p></p>', '<br>')
 
     f = codecs.open('blogOutput.txt', 'w', "utf_8_sig")  # 書き込みモードで開く
     f.write(output)  # シーケンスが引数。
