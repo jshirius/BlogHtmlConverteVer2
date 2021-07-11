@@ -331,9 +331,35 @@ def TagCode(inputStr, inputIndex):
     print(output)
     return inputIndex, output
 
+# TagWaku
+def TagWaku(inputStr, inputIndex):
+
+    title_value = ""
+    # タイトルがあるかチェック
+    m = re.search(r'title=[^\]]*', inputStr[inputIndex])
+    if m != None:
+        title_value = m.group().split("=")[1]
+    
+    # 次に進める
+    inputIndex += 1
+
+    output = '<div class="ep-box es-BsubTradi bgc-white es-borderSolidM es-radius brc-DPred" title="%s">' %(title_value)
+    nextIndex = inputIndex
+
+    return nextIndex, output
+
+
+
+def EndTagWaku(inputStr, inputIndex):
+    # 次に進める
+    inputIndex += 1
+
+    output = '</div>'
+    nextIndex = inputIndex
+
+    return nextIndex, output
+
 # ポイントtagsの対応
-
-
 def TagPoint(inputStr, inputIndex):
     output = ""
     output += '<div class="point_box">'
@@ -557,6 +583,18 @@ def ConvertHtml(inputStr):
 
         elif srcStrs[i].find('[line]') >= 0:
             nextIndex, output = TagLine(srcStrs, i)
+            i = nextIndex
+            outputString += output
+
+        #wakuタグ追加
+        elif srcStrs[i].find('[waku') >= 0:
+            nextIndex, output = TagWaku(srcStrs, i)
+            i = nextIndex
+            outputString += output
+
+        #waku終了タグ追加
+        elif srcStrs[i].find('[/waku') >= 0:
+            nextIndex, output = EndTagWaku(srcStrs, i)
             i = nextIndex
             outputString += output
 
